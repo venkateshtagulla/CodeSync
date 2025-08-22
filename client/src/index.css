@@ -1,0 +1,99 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.editor-container {
+  height: 500px;
+}
+
+.chat-container {
+  height: 400px;
+  overflow-y: auto;
+}
+
+.user-cursor {
+  position: absolute;
+  background: rgba(0, 123, 255, 0.3);
+  border-left: 2px solid #007bff;
+  pointer-events: none;
+}
+
+.online-indicator {
+  width: 8px;
+  height: 8px;
+  background-color: #28a745;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.navbar-brand {
+  font-weight: bold;
+}
+
+.room-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.file-tab {
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 8px 16px;
+  margin-right: 4px;
+  border-radius: 4px 4px 0 0;
+  border: 1px solid #dee2e6;
+  border-bottom: none;
+}
+
+.file-tab.active {
+  background-color: #fff;
+  border-bottom: 1px solid #fff;
+  margin-bottom: -1px;
+}
+
+.file-tab:not(.active) {
+  background-color: #f8f9fa;
+}
+
+.output-panel {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 15px;
+  font-family: 'Courier New', monospace;
+  white-space: pre-wrap;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.navbar-logo {
+  height: 40px; /* Or any other desired height, e.g., 35px */
+  width: auto; /* This maintains the image's aspect ratio */
+}

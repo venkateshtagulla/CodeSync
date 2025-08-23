@@ -70,15 +70,14 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const server = http.createServer(app);
 
-// Get allowed origins from environment variable or use defaults
+// Allowed origins
 const getAllowedOrigins = () => {
   if (process.env.ALLOWED_ORIGINS) {
     return process.env.ALLOWED_ORIGINS.split(',');
   }
-  
-  return process.env.NODE_ENV === 'production' 
+  return process.env.NODE_ENV === 'production'
     ? ['https://your-frontend-domain.onrender.com']
-    : 'http://localhost:3000';
+    : ['http://localhost:3000'];
 };
 
 const corsOptions = {
@@ -87,50 +86,48 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
-const io = new Server(server, {
-  cors: corsOptions
-});
-// Middleware
 app.use(express.json());
 
-// Connect to MongoDB
+// MongoDB connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/collaborative-editor')
-  .then(() => console.log('Connected to MongoDB'))
-  .catch((err) => console.error('MongoDB connection error:', err));
+  .then(() => console.log('✅ Connected to MongoDB'))
+  .catch((err) => console.error('❌ MongoDB connection error:', err));
 
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/rooms', roomRoutes);
 
-// Health check endpoint
+// Health check
 app.get('/api/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'OK', 
+  res.status(200).json({
+    status: 'OK',
     message: 'Server is running',
     environment: process.env.NODE_ENV || 'development'
   });
 });
 
-// Socket.IO middleware and handlers
+// Socket.IO
+const io = new Server(server, { cors: corsOptions });
 io.use(authenticateSocket);
 socketHandlers(io);
 
-// Serve frontend in production only
+// Serve frontend (React build) in production
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, "../client/build")));
+  const clientBuildPath = path.join(__dirname, '../client/build');
+  app.use(express.static(clientBuildPath));
 
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../client/build", "index.html"));
+  // ✅ Express v4 safe catch-all
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(clientBuildPath, 'index.html'));
   });
 }
 
 // Start server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
   if (process.env.NODE_ENV === 'production') {
-    console.log('Frontend serving enabled');
+    console.log('📦 Frontend serving enabled');
   }
 });

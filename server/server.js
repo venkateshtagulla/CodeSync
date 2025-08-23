@@ -76,7 +76,7 @@ const getAllowedOrigins = () => {
     return process.env.ALLOWED_ORIGINS.split(',');
   }
   return process.env.NODE_ENV === 'production'
-    ? ['https://your-frontend-domain.onrender.com']
+    ? ['https://codesync-5wgo.onrender.com']
     : ['http://localhost:3000'];
 };
 

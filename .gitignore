@@ -1,40 +1,54 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-.env
-# Node modules
+# Dependencies
 node_modules/
 client/node_modules/
 
-# Environment variables
+# Production builds
+build/
+client/build/
+dist/
+
+# Environment variables - CRITICAL to exclude
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+*.log
+logs/
 
-# React build folder (optional, usually you build in server)
-client/build/
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
 
+# Coverage reports
+coverage/
+*.lcov
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+Thumbs.db
+
+# Optional cache directories
+.npm
+.eslintcache
+.cache
+.parcel-cache
+
+# Lock files (optional - some teams include them, some don't)
+# package-lock.json
+# yarn.lock

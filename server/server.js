@@ -70,15 +70,28 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const server = http.createServer(app);
 
-const io = new Server(server, {
-  cors: {
-    origin: process.env.NODE_ENV === 'production' ? false : "http://localhost:3000",
-    methods: ["GET", "POST"]
+// Get allowed origins from environment variable or use defaults
+const getAllowedOrigins = () => {
+  if (process.env.ALLOWED_ORIGINS) {
+    return process.env.ALLOWED_ORIGINS.split(',');
   }
-});
+  
+  return process.env.NODE_ENV === 'production' 
+    ? ['https://your-frontend-domain.onrender.com']
+    : 'http://localhost:3000';
+};
 
+const corsOptions = {
+  origin: getAllowedOrigins(),
+  credentials: true
+};
+
+app.use(cors(corsOptions));
+
+const io = new Server(server, {
+  cors: corsOptions
+});
 // Middleware
-app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB
@@ -90,19 +103,34 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/collabora
 app.use('/api/auth', authRoutes);
 app.use('/api/rooms', roomRoutes);
 
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'OK', 
+    message: 'Server is running',
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
 // Socket.IO middleware and handlers
 io.use(authenticateSocket);
 socketHandlers(io);
 
-// Serve frontend
-app.use(express.static(path.join(__dirname, "../client/build")));
+// Serve frontend in production only
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, "../client/build")));
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../client/build", "index.html"));
-});
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../client/build", "index.html"));
+  });
+}
 
 // Start server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  if (process.env.NODE_ENV === 'production') {
+    console.log('Frontend serving enabled');
+  }
 });
